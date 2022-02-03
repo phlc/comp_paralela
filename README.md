@@ -1,2 +1,2 @@
 # comp_paralela
-Parallel Computing
+Parallel Computing's Course
