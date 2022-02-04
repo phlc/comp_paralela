@@ -1,3 +1,3 @@
 # comp_paralela
-PUC Minas
+Puc Minas
 Parallel Computing's Course
