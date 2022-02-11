@@ -10,12 +10,12 @@
 
 
 /*
-   Na linha XX duas threads são abertas, compartilhando a
+   Na linha 39 duas threads são abertas, compartilhando a
    variável 'i'. Como a variável 'tid' é criada dentro das
    threads, cada uma tem a sua.
    
    O 'for' tem a diretiva 'omp for ordered' de forma que as 
-   instruções vinculadas a diretiva 'omp ordered' (linha XX) 
+   instruções vinculadas a diretiva 'omp ordered' (linha 46) 
    serão executadas em ordem. Assim, eventuais tarefas 
    realizadas em paralelo pelas threads dentro do 'for' antes
    da diretiva 'omp ordered;, somente prosseguirão em ordem. 
