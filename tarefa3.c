@@ -19,19 +19,23 @@ int sieveOfEratosthenes(int n)
 
    memset(prime, true,(n+1)*sizeof(bool));
 
+   #pragma omp parallel for schedule(dynamic) num_threads(4)
    for (int p=2; p <= sqrt_n; p++)
    {
        // If prime[p] is not changed, then it is a prime
        if (prime[p] == true)
        {
            // Update all multiples of p
-           for (int i=p*2; i<=n; i += p)
+         
+         #pragma omp parallel for num_threads(4) 
+         for (int i=p*2; i<=n; i += p)
            prime[i] = false;
         }
     }
 
     // count prime numbers
-    for (int p=2; p<=n; p++)
+   #pragma omp parallel for reduction (+:primes) num_threads(4)
+   for (int p=2; p<=n; p++)
        if (prime[p])
          primes++;
 
