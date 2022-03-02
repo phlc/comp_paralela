@@ -10,7 +10,12 @@ real  0m4.048s
 user  0m3.971s
 sys   0m0.068s
 
-Tempo do Programa Paralelo:
+Tempo do Programa Paralelo com escalonamento estático
+real  0m3.858s
+user  0m7.041s
+sys   0m0.076s
+
+Tempo do Programa Paralelo com escalonamento dinâmico:
 real  0m2.268s
 user  0m8.682s
 sys   0m0.092s
@@ -18,7 +23,7 @@ sys   0m0.092s
 Speedup: 1.784
 
 
-No 'for' externo da linha 55 e interno de linha 62 não têm variáveis
+No 'for' externo da linha 60 e interno de linha 67 não têm variáveis
 compartilhadas que possam, em razão da paralelização, fazer uso da diretiva
 'reduction'. Nesses dois 'for', como o trabalho realizado em cada iteração
 é independente, o melhor é simplesmente paralizar as interações.
@@ -27,7 +32,7 @@ diferente, utiliza-se a diretiva 'schedule(dynamic)' para que haja uma
 distribuição da carga de trabalho de forma dinâmica. Assim, uma thread com
 menos trabalho não fica ociosa quando termina seu 'chunk', ela busca mais
 trabalho.
-Por outro lado, o 'for' de linha 68 acumula o resultado na variável 'primes'.
+Por outro lado, o 'for' de linha 74 acumula o resultado na variável 'primes'.
 Assim, a diretiva 'reduction(+:primes)' deve ser utilizada, para que o resultado
 de cada thread seja ao final acumulado na variável.
 
@@ -51,7 +56,7 @@ int sieveOfEratosthenes(int n)
 
    memset(prime, true,(n+1)*sizeof(bool));
 
-   #pragma omp parallel for schedule(dynamic)
+   #pragma omp parallel for schedule(dynamic) 
    for (int p=2; p <= sqrt_n; p++)
    {
        // If prime[p] is not changed, then it is a prime
