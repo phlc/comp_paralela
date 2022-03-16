@@ -1,3 +1,11 @@
+/*
+
+
+
+Fonte: https://github.com/zgyao/DecisionTree_ID3
+*/
+
+
 #include <iostream>
 #include <fstream>
 #include <string>
