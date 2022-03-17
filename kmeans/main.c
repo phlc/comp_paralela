@@ -1,21 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "include/km.h"
+#include <omp.h>
 
+/*
+Fonte: https://github.com/dcasella/k-means
+
+Tempo Serial:
+real  0m17.455s
+user  0m17.366s
+sys   0m0.080s
+
+*/
 
 // Example main() with file importing and k-means execution
 
 int main(int argc, char *argv[]) {
-	if (argc > 4) {
+
+//if removido -> parametros hardcoded
+//	if (argc > 4) {
+
 		FILE *fp;
-		char *filename = argv[1];
-		/* Make sure you update observations_size, vector_size and k
+	   /* Make sure you update observations_size, vector_size and k
 		 * accordingly to your needs
 		 */
+
+      //Parametros por CLI
+   	/*
+      char *filename = argv[1];
 		int observations_size = atoi(argv[2]);
 		int vector_size = atoi(argv[3]);
 		int k = atoi(argv[4]);
-		double **observations;
+		*/
+
+      //Parametros hardcoded
+      char filename[] = "dataSet.in";
+      int observations_size = 1000000;
+      int vector_size = 2;
+      int k = 2;
+
+      double **observations;
 		double ***clusters;
 		
 		observations = (double **) malloc(sizeof(double *) * observations_size);
@@ -52,7 +76,7 @@ int main(int argc, char *argv[]) {
 			free(observations[i]);
 		free(observations);
 		fclose(fp);
-	}
+//	}
 	
 	return 0;
 }

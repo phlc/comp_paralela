@@ -5,6 +5,8 @@
 #include <float.h>
 #include <string.h>
 #include <time.h>
+#include <omp.h>
+
 
 #define ERR_NO_NUM -1
 #define ERR_NO_MEM -2
@@ -125,6 +127,7 @@ double *centroid(double **observations, int observations_size, int vector_size) 
 double *vsum(const double *vector1, const double *vector2, int vector_size) {
 	double *vector = (double *) malloc(sizeof(double) * vector_size);
 	
+   #pragma omp parallel for
 	for (int i = 0; i < vector_size; ++i)
 		vector[i] = vector1[i] + vector2[i];
 	
@@ -134,6 +137,7 @@ double *vsum(const double *vector1, const double *vector2, int vector_size) {
 double *vsub(const double *vector1, const double *vector2, int vector_size) {
 	double *vector = (double *) malloc(sizeof(double) * vector_size);
 	
+   #pragma omp parallel for
 	for (int i = 0; i < vector_size; ++i)
 		vector[i] = vector1[i] - vector2[i];
 	
@@ -143,6 +147,7 @@ double *vsub(const double *vector1, const double *vector2, int vector_size) {
 double innerprod(const double *vector1, const double *vector2, int vector_size) {
 	double prod = 0;
 	
+//   #pragma omp parallel for reduction(+:prod)
 	for (int i = 0; i < vector_size; ++i)
 		prod += vector1[i] * vector2[i];
 	
