@@ -2,8 +2,33 @@
 
 
 
+Output:
+   Outlook
+   Overcast
+      yes
+   Rainy
+      Wind
+      Strong
+         no
+      Weak
+         yes
+   Sunny
+      Humidity
+      High
+         no
+      Normal
+         yes
+
+
+Tempo Serial:
+real  0m19.070s
+user  0m18.786s
+sys   0m0.268s
+
+
 Fonte: https://github.com/zgyao/DecisionTree_ID3
 */
+
 
 
 #include <iostream>
@@ -14,6 +39,9 @@ Fonte: https://github.com/zgyao/DecisionTree_ID3
 #include <map>
 #include <algorithm>
 #include <math.h>
+#include <stdio.h>
+#include <string.h>
+#include <omp.h>
 
 using namespace std;
 
@@ -25,7 +53,7 @@ class MatrixCls
     MatrixCls(string Data_File)
     {
       Matrix.erase(Matrix.begin(),Matrix.end());
-      ifstream Data(Data_File);
+      ifstream Data(Data_File.c_str());
       string line;
       string item;
       vector < string > Row;
@@ -229,6 +257,7 @@ string GetFrequentScore(vector < string > Scores)
   vector < string > Unique_Scores = GetUniqueScores(Scores);
   int Count[Unique_Scores.size()];
   memset(Count, 0, Unique_Scores.size()*sizeof(int));
+
   for(int i = 0; i < Scores.size(); i++)
   {
     for(int k = 0; k < Unique_Scores.size(); k++)
@@ -306,6 +335,8 @@ double ComputeAttributeEntropyGain(MatrixCls Remain_Matrix, string The_Attribute
 	double Temp_Entropy;
 	vector < string > Temp_Scores;
 	int i,j;
+
+
 	for(i = 0; i < Attribute_Values.size(); i++)
 	{
 		Temp_Scores = Values_Scores[Attribute_Values[i]];
@@ -344,6 +375,7 @@ string Tree::Temp_TestTree(Tree * tree, vector < string > The_Attributes, vector
       return Score_Range[i];
     }
   }
+
 
   for(i = 0; i < The_Attributes.size(); i++)
   {
@@ -407,6 +439,8 @@ Tree * Tree::BuildTree(Tree * tree, MatrixCls Remain_Matrix)
   int j;
   string Max_Attribute;
   vector < string > Attributes = Remain_Matrix.GetAttributes();
+  
+   
   for(j = 0; j < Attributes.size(); j++)
   {
     Temp_Gain =  ComputeAttributeEntropyGain(Remain_Matrix,Attributes[j]);
@@ -421,6 +455,8 @@ Tree * Tree::BuildTree(Tree * tree, MatrixCls Remain_Matrix)
   vector < string > Values = Remain_Matrix.GetAttributeValues(Max_Attribute);
   int i,k;
   MatrixCls New_Matrix;
+
+ 
   for(k = 0; k < Values.size(); k++)
   {
     New_Matrix = New_Matrix.operator()(Remain_Matrix, Max_Attribute, Values[k]);
@@ -480,6 +516,9 @@ vector < string > Tree::TestTree(Tree * tree, MatrixCls The_Matrix)
 
 int main()
 {
+  
+  omp_set_num_threads(4);
+
   MatrixCls Matrix("Train.dat");
   Tree * root;
   root = root->BuildTree(root, Matrix);
@@ -501,6 +540,6 @@ int main()
     cout << *j << "  ";
   }
   cout << endl;
-  */
+*/
   delete root;
 }
