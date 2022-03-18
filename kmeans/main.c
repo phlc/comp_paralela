@@ -4,7 +4,7 @@
 #include <float.h>
 #include <string.h>
 #include <time.h>
-//#include <omp.h>
+#include <omp.h>
 
 
 
@@ -12,10 +12,15 @@
 /*
 Fonte: https://github.com/dcasella/k-means
 
-Tempo Serial:
-real  0m17.455s
-user  0m17.366s
-sys   0m0.080s
+Para facilitar a análise e paralelização os dois módulos e header foram unificados
+neste único arquivo. 
+
+Para compilar basta: gcc -fopenmp main.c -lm <-o file.out>
+
+Tempo Serial
+real  0m12.817s
+user  0m12.772s
+sys   0m0.03
 
 */
 
@@ -161,7 +166,7 @@ double *centroid(double **observations, int observations_size, int vector_size) 
 double *vsum(const double *vector1, const double *vector2, int vector_size) {
 	double *vector = (double *) malloc(sizeof(double) * vector_size);
 	
-   #pragma omp parallel for
+
 	for (int i = 0; i < vector_size; ++i)
 		vector[i] = vector1[i] + vector2[i];
 	
@@ -171,7 +176,7 @@ double *vsum(const double *vector1, const double *vector2, int vector_size) {
 double *vsub(const double *vector1, const double *vector2, int vector_size) {
 	double *vector = (double *) malloc(sizeof(double) * vector_size);
 	
-   #pragma omp parallel for
+
 	for (int i = 0; i < vector_size; ++i)
 		vector[i] = vector1[i] - vector2[i];
 	
@@ -181,7 +186,7 @@ double *vsub(const double *vector1, const double *vector2, int vector_size) {
 double innerprod(const double *vector1, const double *vector2, int vector_size) {
 	double prod = 0;
 	
-//   #pragma omp parallel for reduction(+:prod)
+
 	for (int i = 0; i < vector_size; ++i)
 		prod += vector1[i] * vector2[i];
 	
@@ -379,10 +384,14 @@ int main(int argc, char *argv[]) {
 				fscanf(fp, "%lf", &observations[i][j]);
 		}
 		
+/*
+Muitos dados. Nao precisa mostrar observacoes
+
 		printf("Observations:\n");
 		print_observations(observations, observations_size, vector_size);
 		printf("\n\n");
-		
+*/	
+	
 		clusters = km(observations, k, observations_size, vector_size);
 		printf("Clusters:\n");
 		print_clusters(clusters, k, observations_size, vector_size);
