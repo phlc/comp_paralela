@@ -18,9 +18,10 @@ neste único arquivo.
 Para compilar basta: gcc -fopenmp main.c -lm <-o file.out>
 
 Tempo Serial
-real  0m12.817s
-user  0m12.772s
-sys   0m0.03
+real  0m42.036s
+user  0m41.893s
+sys   0m0.120s
+
 
 */
 
@@ -241,19 +242,20 @@ int rand_num(int size) {
 
 double ** initialize(double **observations, int k, int observations_size, int vector_size) {
 	double **centroids = (double **) malloc(sizeof(double *) * k);
-	
-	srand(time(NULL));
-	int r = rand_num(observations_size);
+
+// Remoção inicialização randomica das centroides para comparacao resultados	
+//	srand(time(NULL));
+//	int r = rand_num(observations_size);
 	
 	for (int i = 0; i < k; ++i) {
 		centroids[i] = (double *) malloc(sizeof(double) * vector_size);
 		for (int j = 0; j < vector_size; ++j) {
-			centroids[i][j] = observations[r][j];
-			r = rand_num(-1);
+			centroids[i][j] = observations[i][j];
+			//r = rand_num(-1);
 		}
 	}
 	
-	rand_num(-22);
+//	rand_num(-22);
 	
 	return centroids;
 }
@@ -263,6 +265,7 @@ int *partition(double **observations, double **cs, int k, int observations_size,
 	float curr_distance;
 	int centroid;
 	
+   #pragma omp parallel for private(centroid, curr_distance)
 	for (int i = 0; i < observations_size; ++i) {
 		float min_distance = DBL_MAX;
 		
@@ -286,13 +289,15 @@ int *partition(double **observations, double **cs, int k, int observations_size,
 double **re_centroids(int *clusters_map, double **observations, int k, int observations_size, int vector_size) {
 	double **centroids = (double **) malloc(sizeof(double *) * k);
 	double **temp_arr = (double **) malloc(sizeof(double *) * observations_size);
-	
-	for (int c = 0, count = 0; c < k; ++c) {
-		for (int i = 0; i < observations_size; ++i) {
+
+
+   int count = 0;
+	for (int c = 0; c < k; ++c) {
+      for (int i = 0; i < observations_size; ++i) {
 			int curr = clusters_map[i];
 			
 			if (curr == c) {
-				temp_arr[count] = observations[i];
+            temp_arr[count] = observations[i];
 				++count;
 			}
 		}
@@ -342,6 +347,11 @@ double **map_cluster(const int *clusters_map, double **observations, int c, int 
 
 int main(int argc, char *argv[]) {
 
+      //configuração das threads
+      omp_set_num_threads(2);
+//      omp_set_nested(1);
+
+
 //if removido -> parametros hardcoded
 //	if (argc > 4) {
 
@@ -362,7 +372,7 @@ int main(int argc, char *argv[]) {
       char filename[] = "dataSet.in";
       int observations_size = 1000000;
       int vector_size = 2;
-      int k = 2;
+      int k = 4;
 
       double **observations;
 		double ***clusters;
