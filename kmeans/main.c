@@ -4,7 +4,7 @@
 #include <float.h>
 #include <string.h>
 #include <time.h>
-//#include <omp.h>
+#include <omp.h>
 
 
 
@@ -12,10 +12,16 @@
 /*
 Fonte: https://github.com/dcasella/k-means
 
-Tempo Serial:
-real  0m17.455s
-user  0m17.366s
-sys   0m0.080s
+Para facilitar a análise e paralelização os dois módulos e header foram unificados
+neste único arquivo. 
+
+Para compilar basta: gcc -fopenmp main.c -lm <-o file.out>
+
+Tempo Serial
+real  0m42.036s
+user  0m41.893s
+sys   0m0.120s
+
 
 */
 
@@ -161,7 +167,7 @@ double *centroid(double **observations, int observations_size, int vector_size) 
 double *vsum(const double *vector1, const double *vector2, int vector_size) {
 	double *vector = (double *) malloc(sizeof(double) * vector_size);
 	
-   #pragma omp parallel for
+
 	for (int i = 0; i < vector_size; ++i)
 		vector[i] = vector1[i] + vector2[i];
 	
@@ -171,7 +177,7 @@ double *vsum(const double *vector1, const double *vector2, int vector_size) {
 double *vsub(const double *vector1, const double *vector2, int vector_size) {
 	double *vector = (double *) malloc(sizeof(double) * vector_size);
 	
-   #pragma omp parallel for
+
 	for (int i = 0; i < vector_size; ++i)
 		vector[i] = vector1[i] - vector2[i];
 	
@@ -181,7 +187,7 @@ double *vsub(const double *vector1, const double *vector2, int vector_size) {
 double innerprod(const double *vector1, const double *vector2, int vector_size) {
 	double prod = 0;
 	
-//   #pragma omp parallel for reduction(+:prod)
+
 	for (int i = 0; i < vector_size; ++i)
 		prod += vector1[i] * vector2[i];
 	
@@ -236,19 +242,20 @@ int rand_num(int size) {
 
 double ** initialize(double **observations, int k, int observations_size, int vector_size) {
 	double **centroids = (double **) malloc(sizeof(double *) * k);
-	
-	srand(time(NULL));
-	int r = rand_num(observations_size);
+
+// Remoção inicialização randomica das centroides para comparacao resultados	
+//	srand(time(NULL));
+//	int r = rand_num(observations_size);
 	
 	for (int i = 0; i < k; ++i) {
 		centroids[i] = (double *) malloc(sizeof(double) * vector_size);
 		for (int j = 0; j < vector_size; ++j) {
-			centroids[i][j] = observations[r][j];
-			r = rand_num(-1);
+			centroids[i][j] = observations[i][j];
+			//r = rand_num(-1);
 		}
 	}
 	
-	rand_num(-22);
+//	rand_num(-22);
 	
 	return centroids;
 }
@@ -258,6 +265,7 @@ int *partition(double **observations, double **cs, int k, int observations_size,
 	float curr_distance;
 	int centroid;
 	
+   #pragma omp parallel for private(centroid, curr_distance)
 	for (int i = 0; i < observations_size; ++i) {
 		float min_distance = DBL_MAX;
 		
@@ -281,13 +289,15 @@ int *partition(double **observations, double **cs, int k, int observations_size,
 double **re_centroids(int *clusters_map, double **observations, int k, int observations_size, int vector_size) {
 	double **centroids = (double **) malloc(sizeof(double *) * k);
 	double **temp_arr = (double **) malloc(sizeof(double *) * observations_size);
-	
-	for (int c = 0, count = 0; c < k; ++c) {
-		for (int i = 0; i < observations_size; ++i) {
+
+
+   int count = 0;
+	for (int c = 0; c < k; ++c) {
+      for (int i = 0; i < observations_size; ++i) {
 			int curr = clusters_map[i];
 			
 			if (curr == c) {
-				temp_arr[count] = observations[i];
+            temp_arr[count] = observations[i];
 				++count;
 			}
 		}
@@ -337,6 +347,11 @@ double **map_cluster(const int *clusters_map, double **observations, int c, int 
 
 int main(int argc, char *argv[]) {
 
+      //configuração das threads
+      omp_set_num_threads(2);
+//      omp_set_nested(1);
+
+
 //if removido -> parametros hardcoded
 //	if (argc > 4) {
 
@@ -357,7 +372,7 @@ int main(int argc, char *argv[]) {
       char filename[] = "dataSet.in";
       int observations_size = 1000000;
       int vector_size = 2;
-      int k = 2;
+      int k = 4;
 
       double **observations;
 		double ***clusters;
@@ -379,10 +394,14 @@ int main(int argc, char *argv[]) {
 				fscanf(fp, "%lf", &observations[i][j]);
 		}
 		
+/*
+Muitos dados. Nao precisa mostrar observacoes
+
 		printf("Observations:\n");
 		print_observations(observations, observations_size, vector_size);
 		printf("\n\n");
-		
+*/	
+	
 		clusters = km(observations, k, observations_size, vector_size);
 		printf("Clusters:\n");
 		print_clusters(clusters, k, observations_size, vector_size);
