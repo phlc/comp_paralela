@@ -15,6 +15,16 @@ real  0m15.961s
 user  0m15.802s
 sys   0m0.148s
 
+Tempo Paralelo 2 Threads
+real  0m6.376s
+user  0m12.484s
+sys   0m0.012s
+
+Tempo Paralelo 4 Threads
+real  0m3.440s
+user  0m12.974s
+sys   0m0.024s
+
 
 
 */
@@ -25,6 +35,7 @@ sys   0m0.148s
 #define NPOINTS 100000
 #define DIMENSIONS 2
 #define NCLUSTERS 8
+#define THREADS 4
 
 //Estrutura para um ponto
 typedef struct
@@ -90,6 +101,7 @@ void assignCluster(int* change){
     reset_clusters();
 
     //Verificar Cluster mais perto
+    #pragma omp parallel for 
     for(int i=0; i<NPOINTS; i++){
         int closestCluster = allPoints[i].cluster;
         double distance = calcDistance(i, closestCluster);
@@ -103,19 +115,30 @@ void assignCluster(int* change){
                     *change = 1;
                 }
                 allPoints[i].cluster = j;
-                closestCluster = j;
+                //closestCluster = j;
             }
         }
 
         //Adicionar ponto no cluster
-        allClusters[closestCluster].clusterPoints[allClusters[closestCluster].nClusterPoints] = &allPoints[i];
-        allClusters[closestCluster].nClusterPoints++;
+
+
+//        allClusters[closestCluster].clusterPoints[allClusters[closestCluster].nClusterPoints] = &allPoints[i];
+//        allClusters[closestCluster].nClusterPoints++;
+
     }
+
+   for(int i=0; i<NPOINTS; i++){
+      int closestCluster = allPoints[i].cluster;
+      allClusters[closestCluster].clusterPoints[allClusters[closestCluster].nClusterPoints] = &allPoints[i];
+      allClusters[closestCluster].nClusterPoints++;
+   }
+
 }
 
 void recalcCentroides(){
     //Para cada Clusteer
-    for(int i=0; i<NCLUSTERS; i++){
+     #pragma omp parallel for
+     for(int i=0; i<NCLUSTERS; i++){
         
         //Cada dimensão
         for(int j=0; j<DIMENSIONS; j++){
@@ -168,6 +191,9 @@ int main() {
             allClusters[i].centroide[j] = allPoints[i].coords[j];
         allClusters[i].nClusterPoints = 0;
     }
+
+    omp_set_num_threads(THREADS);
+
 
     //Obter Clusters
     kmeans();
