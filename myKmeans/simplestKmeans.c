@@ -7,7 +7,7 @@
 
 //Definições
 #define FILENAME "dataSet.in"
-#define NPOINTS 100
+#define NPOINTS 1000
 #define DIMENSIONS 2
 #define NCLUSTERS 8
 
@@ -57,7 +57,7 @@ void print_clusters(){
 }
 
 void reset_clusters(){
-    for(int i=0; i<DIMENSIONS; i++)
+    for(int i=0; i<NCLUSTERS; i++)
         allClusters[i].nClusterPoints=0;
 }
 
@@ -76,16 +76,17 @@ void assignCluster(int* change){
 
     //Verificar Cluster mais perto
     for(int i=0; i<NPOINTS; i++){
-        int closestCluster = -1;
-        double distance = DBL_MAX;
+        int closestCluster = allPoints[i].cluster;
+        double distance = calcDistance(i, closestCluster);
 
         //Calcular menor distância do cluster
         for(int j=0; j<NCLUSTERS; j++){
             double newDistance = calcDistance(i, j);
             if(newDistance < distance){
                 distance = newDistance;
-                if(allPoints[i].cluster != j)
+                if(!*change && allPoints[i].cluster != j){
                     *change = 1;
+                }
                 allPoints[i].cluster = j;
                 closestCluster = j;
             }
@@ -97,17 +98,33 @@ void assignCluster(int* change){
     }
 }
 
+void recalcCentroides(){
+    //Para cada Clusteer
+    for(int i=0; i<NCLUSTERS; i++){
+        
+        //Cada dimensão
+        for(int j=0; j<DIMENSIONS; j++){
+            double pos = 0.0;
+            int nPoints = allClusters[i].nClusterPoints;
+            //Cada ponto
+            for(int k=0; k<nPoints; k++){
+                pos += allClusters[i].clusterPoints[k]->coords[j];
+            }
+            allClusters[i].centroide[j] = pos/nPoints;
+        }
+    }
+}
+
 void kmeans(){
     int hadChange = 1;
 
     //Repetir enquanto houver mudança
     while(hadChange){
-        hadChange = 0;
-
+        hadChange=0;
+    
         assignCluster(&hadChange);
-
-        //if(hadChange)
-            //recalcCentroide();
+        if(hadChange)
+            recalcCentroides();
     }
 }
 
@@ -124,7 +141,7 @@ int main() {
     
 	//Ler pontos do arquivo	
     for (int i = 0; i < NPOINTS; i++) {
-        allPoints[i].cluster = -1;
+        allPoints[i].cluster = 0;
 		for (int j = 0; j < DIMENSIONS; j++){
 			fscanf(fp, "%lf", &allPoints[i].coords[j]);
         }
