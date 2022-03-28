@@ -10,10 +10,18 @@
 simplestKmeans próprio: https://github.com/phlc/comp_paralela/tree/main/myKmeans.
 
 
-Tempo Serial:
+Tempo Serial 
+
+100.000 instâncias:
 real  0m15.961s
 user  0m15.802s
 sys   0m0.148s
+
+300.000 instâncias
+real  0m47.530s
+user  0m47.471s
+sys   0m0.040s
+
 
 
 
@@ -22,7 +30,7 @@ sys   0m0.148s
 
 //Definições
 #define FILENAME "dataSet.in"
-#define NPOINTS 100000
+#define NPOINTS 300000
 #define DIMENSIONS 2
 #define NCLUSTERS 8
 

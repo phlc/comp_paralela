@@ -10,6 +10,8 @@
 simplestKmeans próprio: https://github.com/phlc/comp_paralela/tree/main/myKmeans.
 
 
+100.000 instâncias:
+
 Tempo Serial:
 real  0m15.961s
 user  0m15.802s
@@ -25,6 +27,33 @@ real  0m3.440s
 user  0m12.974s
 sys   0m0.024s
 
+Tempo Paralelo 8 Threads
+real  0m4.265s
+user  0m13.015s
+sys   0m0.184s 
+
+
+300.000 instâncias
+
+Tempo Serial:
+real  0m47.530s
+user  0m47.471s
+sys   0m0.040s
+
+Tempo Paralelo 2 Threads
+real  0m25.028s
+user  0m43.809s
+sys   0m0.068s
+
+Tempo Paralelo 4 Threads
+real  0m10.131s
+user  0m36.459s
+sys   0m0.044s
+
+Tempo Paralelo 8 Threads
+real  0m11.389s
+user  0m36.823s
+sys   0m0.317s
 
 
 */
@@ -32,10 +61,10 @@ sys   0m0.024s
 
 //Definições
 #define FILENAME "dataSet.in"
-#define NPOINTS 100000
+#define NPOINTS 300000
 #define DIMENSIONS 2
 #define NCLUSTERS 8
-#define THREADS 4
+#define THREADS 8
 
 //Estrutura para um ponto
 typedef struct
@@ -121,12 +150,13 @@ void assignCluster(int* change){
 
         //Adicionar ponto no cluster
 
-
+// Remoção da Dependência de dados dentro do for
 //        allClusters[closestCluster].clusterPoints[allClusters[closestCluster].nClusterPoints] = &allPoints[i];
 //        allClusters[closestCluster].nClusterPoints++;
 
     }
 
+// Atribuição de cada ponto ao cluster fora do for para eliminar a dependência de dados
    for(int i=0; i<NPOINTS; i++){
       int closestCluster = allPoints[i].cluster;
       allClusters[closestCluster].clusterPoints[allClusters[closestCluster].nClusterPoints] = &allPoints[i];
