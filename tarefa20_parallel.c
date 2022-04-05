@@ -23,7 +23,7 @@ sys   0m0.008s
 
 int main() 
 {
-   int i, j, n = 30000; 
+   int i, j, n = 90000; 
 
    // Allocate input, output and position arrays
    int *in = (int*) calloc(n, sizeof(int));

@@ -61,7 +61,7 @@ sys   0m0.317s
 
 //Definições
 #define FILENAME "dataSet.in"
-#define NPOINTS 300000
+#define NPOINTS 100000
 #define DIMENSIONS 2
 #define NCLUSTERS 8
 #define THREADS 8
