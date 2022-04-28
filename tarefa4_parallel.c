@@ -79,9 +79,9 @@ int main()
 
   mm(a,b,c,width);
 
-  //  for(int i = 0; i < width; i++) {
-  //  for(int j = 0; j < width; j++) {
-  //    printf("\n c[%d][%d] = %f",i,j,c[i*width+j]);
-  //  }
-  // }
+    for(int i = 0; i < width; i++) {
+    for(int j = 0; j < width; j++) {
+      printf("\n c[%d][%d] = %f",i,j,c[i*width+j]);
+    }
+   }
 }
