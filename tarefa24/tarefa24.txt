@@ -1,0 +1,8 @@
+
+Computacao Paralela
+Pedro Henrique Lima Carvalho
+651230
+
+Código sum_cuda.cu -> Fornecido
+
+

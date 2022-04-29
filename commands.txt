@@ -1,0 +1,5 @@
+nvprof --events warps_launched --metrics warp_execution_efficiency ./a.out
+
+gcc8 -O3 tarefa.c -fopenmp
+
+nvcc -O3 tarefa.cu 
