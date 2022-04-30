@@ -1,8 +1,9 @@
-
 Computacao Paralela
+Ana Laura Fernandes de Oliveira
+Larissa Domingues Gomes
 Pedro Henrique Lima Carvalho
-651230
-
+Pedro Henrique Reis Rodrigues
+Tárcila Fernanda Resende da Silva
 
 
 Código sum_cuda.cu -> Fornecido
