@@ -7,25 +7,19 @@ int main()
 {
   int width = 40000000;
 
-
-  int w2 = (int) pow(2, floor(log2((double) width))+1);
-
+  double sum = 0.0;
   double *a = (double*) malloc (sizeof(double)*width);
 
   for(int i = 0; i < width; i++)
      a[i] = i;  
 
-  #pragma omp target map(tofrom: a[0:width])
-  for(int i = w2/2; i > 0 ; i/=2){
-     #pragma omp teams distribute parallel for
-     for(int j=0; j<i; j++){
-        if(j+i < width)
-           a[j] += a[j+i];
-     }
-     #pragma omp barrier
+  #pragma omp target map(tofrom: a[0:width]), map(tofrom: sum)
+  #pragma omp teams distribute parallel for simd reduction(+: sum)
+  for(int i = 0; i < width ; i++){
+     sum += a[i];
   }
 
-  printf("\nSum = %f\n",a[0]);
+  printf("\nSum = %f\n",sum);
   
   free(a);
 }
