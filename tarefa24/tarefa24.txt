@@ -3,6 +3,39 @@ Computacao Paralela
 Pedro Henrique Lima Carvalho
 651230
 
+
+
 Código sum_cuda.cu -> Fornecido
+
+Sum = 799999980000000.000000
+
+real	0m1.511s
+user	0m0.497s
+sys	0m0.930s
+
+==14204== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+ 95.47%  463.12ms         1  463.12ms  463.12ms  463.12ms  [CUDA memcpy HtoD]
+  4.45%  21.595ms         1  21.595ms  21.595ms  21.595ms  sum_cuda(double*, double*, int)
+  0.08%  367.69us         1  367.69us  367.69us  367.69us  [CUDA memcpy DtoH]
+
+
+
+Código sum_serial -> Sequencial
+
+Sum = 799999980000000.000000
+
+real	0m0.460s
+user	0m0.226s
+sys	0m0.230s
+
+
+Código sum_multicore -> Paralelo Multicore
+
+Sum = 799999980000000.000000
+
+real	0m0.437s
+user	0m0.694s
+sys	0m0.190s
 
 
