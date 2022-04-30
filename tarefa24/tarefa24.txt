@@ -25,17 +25,50 @@ Código sum_serial -> Sequencial
 
 Sum = 799999980000000.000000
 
-real	0m0.460s
-user	0m0.226s
-sys	0m0.230s
+real	0m0.420s
+user	0m0.119s
+sys	0m0.296s
 
 
 Código sum_multicore -> Paralelo Multicore
 
 Sum = 799999980000000.000000
 
-real	0m0.437s
-user	0m0.694s
-sys	0m0.190s
+real	0m0.313s
+user	0m0.235s
+sys	0m0.227s
+
+
+Código sum_gpu -> Paralelo GPU Openmp
+
+Sum = 799999980000000.000000
+
+real	0m1.931s
+user	0m0.803s
+sys	0m1.032s
+
+==1692== Profiling application: ./a.out
+==1692== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+ 54.80%  468.11ms         5  93.622ms     832ns  468.11ms  [CUDA memcpy HtoD]
+ 44.33%  378.65ms         2  189.32ms  1.9520us  378.65ms  [CUDA memcpy DtoH]
+  0.86%  7.3869ms         1  7.3869ms  7.3869ms  7.3869ms  main$_omp_fn$0
+
+
+
+Código sum_noshared_cuda -> Cuda GPU sem memória compartilhada
+
+Sum = 799999980000000.000000
+
+real	0m1.884s
+user	0m0.841s
+sys	0m0.927s
+
+==2168== Profiling application: ./a.out
+==2168== Profiling result:
+Time(%)      Time     Calls       Avg       Min       Max  Name
+ 93.97%  468.77ms         1  468.77ms  468.77ms  468.77ms  [CUDA memcpy HtoD]
+  5.96%  29.744ms         1  29.744ms  29.744ms  29.744ms  sum_cuda(double*, double*, int)
+  0.07%  362.03us         1  362.03us  362.03us  362.03us  [CUDA memcpy DtoH]
 
 
