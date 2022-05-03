@@ -6,6 +6,25 @@ Pedro Henrique Reis Rodrigues
 Tárcila Fernanda Resende da Silva
 
 
+O gasto maior de tempo visto na execução do código em cuda sem memória local compartilhada se dá
+em razão do uso do próprio arranjo dos números a ser somado, memória global, para ler e armazenar 
+as somas parciais de cada bloco, o que é um pouco mais lento. No código com memória local, para
+cada bloco, não há necessidade, dentro do processamento de cada bloco, de acesso a memória global.
+No entanto, o problema de desempenho da solução com memória local é a necessidade de sincronização
+das threads. Serão sincronizadas após a cópia dos elementos para a memória local de cada bloco e
+novamente depois dentro de cada etapa da soma. No código em cuda sem memória local, somente é 
+necessária a sincronização em cada etapa de soma. Por isso a diferença dos códigos em cuda com
+e sem memória local não é acentuada.
+Pelo tempo gasto pela função "CUDA memcpy HtoD" em comparação com o tempo da função sum_cuda 
+é possível verificar que o overhead para transferência dos dados para a GPU é considerável em
+comparação com o tempo de computação efetivo. Isso explica porque os tempos serial e multicore
+foram melhores. De fato, a GPU leva apenas 21 ms aproximadamente para as somas, ao contrário da 
+CPU que leva em torno de 400ms. Mas o overhead de cópia da CPU para a GPU e vice-versa, prejudica 
+o desempenho final.
+Por fim, o desempenho do código com uso de GPU com openmp teve desempenho similar aos em cuda, 
+confirmando que o overhead do uso da GPU prejudica bastante o desempenho do código.
+
+
 Código sum_cuda.cu -> Fornecido
 
 Sum = 799999980000000.000000
