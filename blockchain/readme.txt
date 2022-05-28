@@ -57,6 +57,9 @@ Tempo Programa Cuda:
 
 Obs: ao contrário da versão openmp, foi possível encontrar o kernel do sha para cuda
 
+Repo: https://github.com/francislabountyjr/Blockchain-Miner-Cuda
+
+
 Mining block 1...
 -----------Block 1-----------
 Nonce: L4c6BnBcDWGFpaIvX1xx
