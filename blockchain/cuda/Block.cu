@@ -133,7 +133,7 @@ int Block::MineBlock(uint32_t nDifficulty)
     cudaDeviceReset();
     _sNonce = string((const char*)blockSolution);
     _sHash = _CalculateHash();
-
+    PrintBlock();
     return NULL;
 }
     

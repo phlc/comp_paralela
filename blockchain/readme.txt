@@ -36,17 +36,10 @@ sys   0m0.052s
 
 Tempo Programa Openmp GPU:
 
-- A grande dificuldade em usar a GPU com o openmp foi como transferir as threads
-do cálculo das hashs. para a GPU. 
-Primeiro tem a questao do tipo de dados string que não podia ser mapeado. Esse
-problema foi resolvido transformando em um arranjo de caracteres. 
-No entando, o segundo problema não consiguimos superar: ao enviar para a DPU
-utilizando "teams distribute parallel for" tinhamos que usar um for. A saída foi
-fazer um for de todos uint32_t posssíveis, [0, 0xffffffff]. O problema é que, 
-ao contrário da versão CPU, não foi encontrada uma forma eficiente de interromper
-as threads assim que uma hash válida fosse aceita. Assim, a GPU tinha que calcular
-todo o intervalo, o que tornou inviável. A opção foi utilizar a gpu apenas para 
-cálculo da cstr.
+Obs: Até a parte de mapear todas as variáveis para gpu e mandar chuncks por vez
+foi feito.
+Mas a grande dificuldade está em mapear para a gpu toda a função de calcular
+a hash. Assim, optamos por mapear para a gpu o for anterior
 
 Mining block 1...
 Block mined: 000000c065f96d522875952c5dea74abfe273904a4ad6b45f1dda149019d7839
@@ -61,4 +54,33 @@ sys   0m0.778s
 
 
 Tempo Programa Cuda:
+
+Obs: ao contrário da versão openmp, foi possível encontrar o kernel do sha para cuda
+
+Mining block 1...
+-----------Block 1-----------
+Nonce: L4c6BnBcDWGFpaIvX1xx
+Hash: 000000cd54fce9308804fae75bee779543167b2e429b7683a538e1fd57641fd0
+Previous Hash: 019dc9ae4bf3bc16642b07c6e4794d08c15e33418fad7f91879b8238b352dc1a
+Data: Block 1 Data
+Time: 1653703542
+Mining block 2...
+-----------Block 2-----------
+Nonce: lr4KZuLlavZs5xZ6ApUY
+Hash: 00000056ceb87b9f56c7755c1bf9803a7f7d3759132a4b66d32c14edfad55cd1
+Previous Hash: 000000cd54fce9308804fae75bee779543167b2e429b7683a538e1fd57641fd0
+Data: Block 2 Data
+Time: 1653703543
+Mining block 3...
+-----------Block 3-----------
+Nonce: v1Htz8uvIFUFbibrt1GA
+Hash: 0000002d3ff764b3c7449dba1b74aa7890d833b03fe83ea253ab6a43ff0c5678
+Previous Hash: 00000056ceb87b9f56c7755c1bf9803a7f7d3759132a4b66d32c14edfad55cd1
+Data: Block 3 Data
+Time: 1653703545
+
+real  0m7.079s
+user  0m4.610s
+sys   0m2.374s
+
 
